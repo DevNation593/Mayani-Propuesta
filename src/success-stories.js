@@ -1,0 +1,32 @@
+export const successStories = [
+  {
+    id: 'ecoplastia-brillo',
+    category: 'Ecoplastia capilar',
+    title: 'Brillo que se nota.',
+    description: 'Un acabado liso y luminoso en cabello largo, presentado por el estudio en su reel de ecoplastia.',
+    image: '/casos/ecoplastia-brillo.jpg',
+    imageAlt: 'Cabello largo y oscuro con acabado liso y brillante en un resultado de ecoplastia publicado por Mayani Studio.',
+    sourceUrl: 'https://www.instagram.com/mayani_uio/reel/DblQLalRN8r/',
+    publishedAt: '2026-08-03',
+  },
+  {
+    id: 'alisado-pulido',
+    category: 'Alisado',
+    title: 'Un acabado pulido.',
+    description: 'Cabello oscuro con un acabado liso y brillo visible. El estudio comparte el resultado de su trabajo en este reel.',
+    image: '/casos/alisado-pulido.jpg',
+    imageAlt: 'Cabello largo y liso visto de perfil, con brillo visible en un trabajo de alisado de Mayani Studio.',
+    sourceUrl: 'https://www.instagram.com/mayani_uio/reel/DYhubzeRjsB/',
+    publishedAt: '2026-05-19',
+  },
+  {
+    id: 'ecoplastia-largos',
+    category: 'Ecoplastia capilar',
+    title: 'Largos con presencia.',
+    description: 'Vista posterior de un trabajo de ecoplastia: largos lisos y un acabado uniforme, compartidos en el Instagram del estudio.',
+    image: '/casos/ecoplastia-largos.jpg',
+    imageAlt: 'Resultado de ecoplastia visto de espaldas: cabello largo, oscuro y liso en Mayani Studio.',
+    sourceUrl: 'https://www.instagram.com/mayani_uio/reel/DYgSbZPspCN/',
+    publishedAt: '2026-05-18',
+  },
+]
