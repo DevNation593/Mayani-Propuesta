@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { buildWhatsAppUrl } from './whatsapp.js'
+import { buildWhatsAppUrl, formatWhatsAppNumber } from './whatsapp.js'
 
 test('no ofrece una reserva a un número pendiente o incompleto', () => {
   for (const number of ['', undefined, '593', '+593', '593XXXXXXXXX', '123']) {
@@ -34,4 +34,18 @@ test('mantiene el servicio y los caracteres especiales dentro del mensaje', () =
   assert.ok(message.includes(service))
   assert.ok(message.includes('¿Qué horarios'))
   assert.deepEqual([...url.searchParams.keys()], ['text'])
+})
+
+test('presenta el número del estudio en formato internacional', () => {
+  for (const number of ['+593 98 853 6889', '0988536889', '593988536889']) {
+    assert.equal(formatWhatsAppNumber(number), '+593 98 853 6889')
+  }
+  for (const number of ['', '593', 'abc']) {
+    assert.equal(formatWhatsAppNumber(number), null)
+  }
+})
+
+test('el número del estudio abre su chat de WhatsApp', () => {
+  const url = new URL(buildWhatsAppUrl('+593 98 853 6889', 'Color'))
+  assert.equal(url.pathname, '/593988536889')
 })

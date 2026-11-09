@@ -108,7 +108,7 @@ em { color: var(--gold); font-style: italic; }
 .booking-details { display: flex; flex-wrap: wrap; gap: 28px; border-top: 1px solid rgba(12,12,11,.25); margin-top: 54px; padding-top: 20px; color: #62594b; font: 11px/1.8 var(--mono); }
 .booking-details a { color: #73551b; }
 .contact-location { flex: 1 1 180px; }
-.contact-phone { flex: 1 1 140px; }
+.contact-whatsapp { flex: 1 1 140px; }
 .contact-social { flex: 1 1 170px; }
 .contact-social a { display: block; }
 .contact-label { display: block; margin-bottom: 8px; color: #62594b; }

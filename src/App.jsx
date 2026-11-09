@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { buildInstagramEmbedUrl, INSTAGRAM_ORIGIN, readEmbedHeight } from './instagram.js'
 import { services, studio } from './studio.js'
 import { successStories } from './success-stories.js'
-import { buildWhatsAppUrl } from './whatsapp.js'
+import { buildWhatsAppUrl, formatWhatsAppNumber } from './whatsapp.js'
 import './App.css'
 
 function Brand({ className = '' }) {
@@ -96,6 +96,8 @@ function App() {
   const [selectedService, setSelectedService] = useState(services[0].name)
   const menuButton = useRef(null)
   const whatsappUrl = buildWhatsAppUrl(studio.whatsappNumber, selectedService, studio.whatsappCountryCode)
+  const whatsappContactUrl = buildWhatsAppUrl(studio.whatsappNumber, null, studio.whatsappCountryCode)
+  const whatsappDisplay = formatWhatsAppNumber(studio.whatsappNumber, studio.whatsappCountryCode)
   const bookingLinkProps = {
     href: whatsappUrl || '#reserva',
     ...(whatsappUrl ? { target: '_blank', rel: 'noopener noreferrer' } : {}),
@@ -204,10 +206,12 @@ function App() {
               <address>{studio.location.address}<br />{studio.location.city} {studio.location.postalCode}, {studio.location.country}</address>
               <a className="directions-link" href={studio.location.mapsUrl} target="_blank" rel="noopener noreferrer">Cómo llegar <span aria-hidden="true">↗</span></a>
             </div>
-            <div className="contact-phone">
-              <span className="contact-label">Llámanos</span>
-              <a href={studio.phone.href}>{studio.phone.display}</a>
-            </div>
+            {whatsappContactUrl && (
+              <div className="contact-whatsapp">
+                <span className="contact-label">Agenda por WhatsApp</span>
+                <a href={whatsappContactUrl} target="_blank" rel="noopener noreferrer">{whatsappDisplay} <span aria-hidden="true">↗</span></a>
+              </div>
+            )}
             <div className="contact-social">
               <span className="contact-label">Redes oficiales</span>
               <a href={studio.instagramUrl} target="_blank" rel="noopener noreferrer" aria-label={`Instagram @${studio.instagramHandle}`}>Instagram @{studio.instagramHandle} <span aria-hidden="true">↗</span></a>
@@ -255,7 +259,7 @@ function App() {
           <a href={studio.location.mapsUrl} target="_blank" rel="noopener noreferrer">Cómo llegar <span aria-hidden="true">↗</span></a>
           <a href={studio.instagramUrl} target="_blank" rel="noopener noreferrer">Instagram <span aria-hidden="true">↗</span></a>
           <a href={studio.tiktokUrl} target="_blank" rel="noopener noreferrer">TikTok <span aria-hidden="true">↗</span></a>
-          <a href={studio.phone.href}>{studio.phone.display}</a>
+          {whatsappContactUrl && <a href={whatsappContactUrl} target="_blank" rel="noopener noreferrer">WhatsApp {whatsappDisplay} <span aria-hidden="true">↗</span></a>}
         </div>
       </footer>
     </>
