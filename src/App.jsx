@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { buildInstagramEmbedUrl, INSTAGRAM_ORIGIN, readEmbedHeight } from './instagram.js'
 import { services, studio } from './studio.js'
 import { successStories } from './success-stories.js'
 import { buildWhatsAppUrl } from './whatsapp.js'
@@ -18,6 +19,75 @@ function WhatsAppIcon() {
       <path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.5L3 20.8l1.5-4.7a8.5 8.5 0 1 1 16-4.3Z" />
       <path d="m8.4 7.5 1.4 2.8-1.1 1a10.3 10.3 0 0 0 4.1 4.1l1-1.1 2.8 1.4c-.5 1.7-1.5 2.1-3.1 1.5-3.7-1.4-6.3-4-7.3-7-.5-1.4.3-2.4 2.2-2.7Z" transform="translate(1 -1) scale(.94)" />
     </svg>
+  )
+}
+
+function formatDate(value) {
+  return new Date(`${value}T12:00:00Z`).toLocaleDateString('es-EC', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
+}
+
+function CaseCard({ story }) {
+  const embedUrl = buildInstagramEmbedUrl(story.sourceUrl)
+  const [playing, setPlaying] = useState(false)
+  const [embedHeight, setEmbedHeight] = useState(null)
+  const frame = useRef(null)
+
+  useEffect(() => {
+    if (!playing) return undefined
+
+    frame.current?.focus()
+    const updateHeight = (event) => {
+      if (event.origin !== INSTAGRAM_ORIGIN || event.source !== frame.current?.contentWindow) return
+      const height = readEmbedHeight(event.data)
+      if (height) setEmbedHeight(height)
+    }
+
+    window.addEventListener('message', updateHeight)
+    return () => window.removeEventListener('message', updateHeight)
+  }, [playing])
+
+  const poster = (
+    <>
+      <img className="case-image" src={story.image} alt={story.imageAlt} width="360" height="640" loading="lazy" decoding="async" />
+      <span className="case-play" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7Z" /></svg></span>
+      <span className="case-format" aria-hidden="true">Reel / Mayani Studio</span>
+    </>
+  )
+
+  return (
+    <article className="case-card">
+      <div className={playing ? 'case-media is-playing' : 'case-media'}>
+        {playing ? (
+          <iframe
+            ref={frame}
+            className="case-embed"
+            src={embedUrl}
+            title={`Reel de Instagram de ${studio.name}: ${story.title}`}
+            style={embedHeight ? { height: `${embedHeight}px` } : undefined}
+            scrolling="no"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+            allowFullScreen
+          />
+        ) : embedUrl ? (
+          <button className="case-poster" type="button" onClick={() => setPlaying(true)} aria-label={`Reproducir reel: ${story.title}`}>
+            {poster}
+          </button>
+        ) : (
+          <a className="case-poster" href={story.sourceUrl} target="_blank" rel="noopener noreferrer" aria-label={`Ver resultado en Instagram: ${story.title}`}>
+            {poster}
+          </a>
+        )}
+      </div>
+      <div className="case-body">
+        <p className="case-category">{story.category}</p>
+        <h3>{story.title}</h3>
+        <p className="case-description">{story.description}</p>
+        <div className="case-footer">
+          <time dateTime={story.publishedAt}>{formatDate(story.publishedAt)}</time>
+          <a className="case-cta" href={story.sourceUrl} target="_blank" rel="noopener noreferrer" aria-label={`Abrir en Instagram: ${story.title}`}>Abrir en Instagram <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </article>
   )
 }
 
@@ -115,29 +185,10 @@ function App() {
         <div className="section-heading"><div className="section-label">03 / Casos de éxito</div><p>Del estudio a nuestro Instagram</p></div>
         <div className="case-intro">
           <h2 id="results-title">El brillo de un<br /><em>cambio real.</em></h2>
-          <p>Resultados de alisado y ecoplastia publicados por Mayani Studio. Abre cada reel y descubre el trabajo completo.</p>
+          <p>Resultados de alisado y ecoplastia publicados por Mayani Studio. Reproduce cada reel aquí mismo y descubre el trabajo completo.</p>
         </div>
         <div className="case-grid">
-          {successStories.map((story) => (
-            <article className="case-card" key={story.id}>
-              <a className="case-link" href={story.sourceUrl} target="_blank" rel="noopener noreferrer" aria-label={`Ver resultado en Instagram: ${story.title}`}>
-                <div className="case-media">
-                  <img className="case-image" src={story.image} alt={story.imageAlt} width="360" height="640" loading="lazy" decoding="async" />
-                  <span className="case-play" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7Z" /></svg></span>
-                  <span className="case-format" aria-hidden="true">Reel / Mayani Studio</span>
-                </div>
-                <div className="case-body">
-                  <p className="case-category">{story.category}</p>
-                  <h3>{story.title}</h3>
-                  <p className="case-description">{story.description}</p>
-                  <div className="case-footer">
-                    <time dateTime={story.publishedAt}>{new Date(`${story.publishedAt}T12:00:00Z`).toLocaleDateString('es-EC', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}</time>
-                    <span className="case-cta">Ver reel <span aria-hidden="true">↗</span></span>
-                  </div>
-                </div>
-              </a>
-            </article>
-          ))}
+          {successStories.map((story) => <CaseCard key={story.id} story={story} />)}
         </div>
         <a className="instagram-link" href={studio.instagramUrl} target="_blank" rel="noopener noreferrer">Más resultados en @{studio.instagramHandle} <span aria-hidden="true">↗</span></a>
       </section>
@@ -153,9 +204,14 @@ function App() {
               <address>{studio.location.address}<br />{studio.location.city} {studio.location.postalCode}, {studio.location.country}</address>
               <a className="directions-link" href={studio.location.mapsUrl} target="_blank" rel="noopener noreferrer">Cómo llegar <span aria-hidden="true">↗</span></a>
             </div>
+            <div className="contact-phone">
+              <span className="contact-label">Llámanos</span>
+              <a href={studio.phone.href}>{studio.phone.display}</a>
+            </div>
             <div className="contact-social">
-              <span className="contact-label">Instagram oficial</span>
-              <a href={studio.instagramUrl} target="_blank" rel="noopener noreferrer">@{studio.instagramHandle} <span aria-hidden="true">↗</span></a>
+              <span className="contact-label">Redes oficiales</span>
+              <a href={studio.instagramUrl} target="_blank" rel="noopener noreferrer" aria-label={`Instagram @${studio.instagramHandle}`}>Instagram @{studio.instagramHandle} <span aria-hidden="true">↗</span></a>
+              <a href={studio.tiktokUrl} target="_blank" rel="noopener noreferrer" aria-label={`TikTok @${studio.tiktokHandle}`}>TikTok @{studio.tiktokHandle} <span aria-hidden="true">↗</span></a>
             </div>
           </div>
           <div className="location-map">
@@ -198,6 +254,8 @@ function App() {
         <div className="footer-links">
           <a href={studio.location.mapsUrl} target="_blank" rel="noopener noreferrer">Cómo llegar <span aria-hidden="true">↗</span></a>
           <a href={studio.instagramUrl} target="_blank" rel="noopener noreferrer">Instagram <span aria-hidden="true">↗</span></a>
+          <a href={studio.tiktokUrl} target="_blank" rel="noopener noreferrer">TikTok <span aria-hidden="true">↗</span></a>
+          <a href={studio.phone.href}>{studio.phone.display}</a>
         </div>
       </footer>
     </>

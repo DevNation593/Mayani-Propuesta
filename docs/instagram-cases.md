@@ -13,3 +13,9 @@ Consulta de las fuentes: 18 de octubre de 2026.
 Los títulos y las descripciones son textos editoriales breves basados en las imágenes y en la identificación del servicio en las publicaciones. Cada tarjeta identifica el tipo de trabajo y la fecha de publicación.
 
 Los datos de presentación están en `src/success-stories.js`. Se usa una copia local de las portadas para que la carga de las imágenes no dependa de enlaces temporales del CDN de Instagram ni de una sesión del visitante en esa red.
+
+## Reproducción en la página
+
+Las tarjetas muestran la portada local y no cargan nada de Instagram hasta que la persona pulsa reproducir. Entonces se reemplaza la portada por el reproductor oficial (`https://www.instagram.com/reel/<código>/embed/`), generado desde `sourceUrl` en `src/instagram.js`. El reproductor informa su altura por `postMessage` (`MEASURE`) y la tarjeta se ajusta a ella, así que no aparece scroll interno.
+
+Dentro del reproductor se ven el encabezado de la cuenta y los controles de Instagram. Al cargarse, Instagram puede usar sus cookies. Para agregar otro reel basta con sumar un caso en `src/success-stories.js` con el enlace del reel en `sourceUrl`.
