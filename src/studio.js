@@ -4,10 +4,6 @@ export const studio = {
   instagramUrl: 'https://www.instagram.com/mayani_uio/',
   tiktokHandle: 'mayani.uio',
   tiktokUrl: 'https://www.tiktok.com/@mayani.uio',
-  phone: {
-    display: '+593 98 853 6889',
-    href: 'tel:+593988536889',
-  },
   location: {
     address: 'Av. Real Audiencia',
     city: 'Quito',
@@ -17,7 +13,8 @@ export const studio = {
     embedUrl: 'https://www.google.com/maps/embed?origin=mfe&pb=!1m3!3m2!1m1!4s7362187913944469911!3m1!1ses!5m1!1ses',
   },
   whatsappCountryCode: '593',
-  whatsappNumber: import.meta.env.VITE_WHATSAPP_NUMBER || '',
+  // Número de WhatsApp para agendar citas; VITE_WHATSAPP_NUMBER permite reemplazarlo.
+  whatsappNumber: import.meta.env.VITE_WHATSAPP_NUMBER || '+593 98 853 6889',
 }
 
 // Servicios propuestos para la presentación; confirmar el catálogo con el estudio.
