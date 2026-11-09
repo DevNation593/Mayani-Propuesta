@@ -2,6 +2,12 @@ export const studio = {
   name: 'Mayani Studio',
   instagramHandle: 'mayani_uio',
   instagramUrl: 'https://www.instagram.com/mayani_uio/',
+  tiktokHandle: 'mayani.uio',
+  tiktokUrl: 'https://www.tiktok.com/@mayani.uio',
+  phone: {
+    display: '+593 98 853 6889',
+    href: 'tel:+593988536889',
+  },
   location: {
     address: 'Av. Real Audiencia',
     city: 'Quito',
